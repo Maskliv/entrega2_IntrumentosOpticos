@@ -1,1 +1,1 @@
-# entrega2_IntrumentosOpticos
+# Entrega 2: Difraccion Escalar discreta
