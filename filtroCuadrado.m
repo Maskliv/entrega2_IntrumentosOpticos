@@ -15,7 +15,5 @@ for i = 1:numCircles
     filtro = circulo|filtro;
 end
 
-filtroResultado= double(filtro);
-
-end
+filtroResultado = double(filtro);
 end
