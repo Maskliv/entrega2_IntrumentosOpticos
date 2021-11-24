@@ -1,4 +1,4 @@
-function [rejilla] = rejillaPunto2(Nx,Ny,dx,dy,m, L)
+function [rejilla] = rejilla(Nx,Ny,dx,dy,m, L)
 
 x = 1:Nx;
 y = 1:Ny;
