@@ -20,32 +20,37 @@ end
 % Se define el espacio coordenado
 [Ny,Nx] = size(campoEntrada);
 
-x = 1-(Nx/2):Nx/2;
-y = 1-(Ny/2):Ny/2;
-[X,Y] = meshgrid(x,y);
+x0 = 1-(Nx/2):Nx/2;
+y0 = 1-(Ny/2):Ny/2;
+[X0,Y0] = meshgrid(x0,y0);
 
-dfx = (1/(Nx*dx));
-dfy = (1/(Ny*dy));
+
+z = distPropagacion;
 
 % Damos dimensiones de mundo
-fX = X*dfx;
-fY = Y*dfy;
+X0 = X0*dx;
+Y0 = Y0*dy;
+
+X = X0*(waveLength*z/(Nx*dx)); % Condicion de muestreo entre planos
+Y = Y0*(waveLength*z/(Ny*dy));
+
 
 % Definimos constantes
 k = 2*pi/waveLength;
 
-z = distPropagacion;
 
-impulsoEnFourier = exp(1i*k*z)*exp(-1i*pi*waveLength*z*((fX.^2) + (fY.^2))); % transformada de fourier Fución De respuesta al Impulso
+
+frenteParabolicoU0 = exp(1i*k/(2*z)*((X0.^2) + (Y0.^2))); % transformada de fourier Fución De respuesta al Impulso
+frenteParabolicoUz = (exp(1i*k*z)/1i*waveLength*z)*exp(1i*k/(2*z)*((X.^2) + (Y.^2)));
 
 if options.dft
-    U0Fourier = (dx*dy)*fftshift(DFT_selfMade(campoEntrada));
-    UzFourier = U0Fourier.*impulsoEnFourier;
-    campoPropagado = (dfx*dfy)*iDFT_selfMade(UzFourier);
+    Uprima = campoEntrada.*frenteParabolicoU0;
+    UdoblePrima = (dx*dy)*fftshift(DFT_selfMade(Uprima));
+    campoPropagado = frenteParabolicoUz.*UdoblePrima;
 else
-    U0Fourier = (dx*dy)*fftshift(fft2(campoEntrada));
-    UzFourier = U0Fourier.*impulsoEnFourier;
-    campoPropagado = (dfx*dfy)*ifft2(UzFourier);
+    Uprima = campoEntrada.*frenteParabolicoU0;
+    UdoblePrima = (dx*dy)*fftshift(fft2(Uprima));
+    campoPropagado = frenteParabolicoUz.*UdoblePrima;
 end
 
 
