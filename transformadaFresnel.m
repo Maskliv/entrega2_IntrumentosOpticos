@@ -6,6 +6,7 @@ arguments
     distPropagacion double
     waveLength double
     options.dft logical = false
+    options.zoom logical = false
 end
 
 
@@ -28,11 +29,13 @@ y0 = 1-(Ny/2):Ny/2;
 z = distPropagacion;
 
 % Damos dimensiones de mundo
+X = X0*(waveLength*z/(Nx*dx)); % Condicion de muestreo entre planos
+Y = Y0*(waveLength*z/(Ny*dy));
+
 X0 = X0*dx;
 Y0 = Y0*dy;
 
-X = X0*(waveLength*z/(Nx*dx)); % Condicion de muestreo entre planos
-Y = Y0*(waveLength*z/(Ny*dy));
+
 
 
 % Definimos constantes
@@ -52,6 +55,15 @@ else
     UdoblePrima = (dx*dy)*fftshift(fft2(Uprima));
     campoPropagado = frenteParabolicoUz.*UdoblePrima;
 end
+
+if options.zoom
+    hMin = Ny/2 - round((Ny*dy/2)/(waveLength*z/(Ny*dy)));
+    hMax = Ny/2 + round((Ny*dy/2)/(waveLength*z/(Ny*dy)));
+    wMin = Nx/2 - round((Nx*dx/2)/(waveLength*z/(Nx*dx)));
+    wMax = Nx/2 + round((Nx*dx/2)/(waveLength*z/(Nx*dx)));
+    campoPropagado = campoPropagado(hMin:hMax, wMin:wMax);
+end
+
 
 
 end
